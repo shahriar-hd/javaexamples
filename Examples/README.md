@@ -18,10 +18,10 @@ The Fibonacci series, named after Italian mathematician Leonardo da Pisa, is a s
 This method iteratively calculates and prints each Fibonacci number from a(1) to a(n), separated by tab.
 <br />Key Formula: a(n) = a(n-1) + a(n-2), where a(1) = 1 and a(2) = 1.
 ### Printing the nth Fibonacci number using a closed formula:
-<br />This method directly calculates and prints the nth Fibonacci number using a more efficient mathematical formula. [Click here for more information](https://en.wikipedia.org/wiki/Fibonacci_sequence)
+This method directly calculates and prints the nth Fibonacci number using a more efficient mathematical formula. [Click here for more information](https://en.wikipedia.org/wiki/Fibonacci_sequence)
 <br />Key Formula: a(n) = (1/sqrt(5)) * [(1+sqrt(5))/2]^n - (1/sqrt(5)) * [(1-sqrt(5))/2]^n
-<br />![Fibonancci sequence formula](https://i.stack.imgur.com/tsuYw.png)
-<br />Directly calculates the nth Fibonacci number without needing to generate the entire sequence up to that point, making it computationally faster for large values of n. Provides a concise and precise way to obtain a specific Fibonacci number without unnecessary calculations.
+<br /><br />![Fibonancci sequence formula](https://i.stack.imgur.com/tsuYw.png)
+<br /><br />Directly calculates the nth Fibonacci number without needing to generate the entire sequence up to that point, making it computationally faster for large values of n. Provides a concise and precise way to obtain a specific Fibonacci number without unnecessary calculations.
 <br />Example: To find the 10th Fibonacci number using Method 2:
 <br />Apply the formula: a(10) = (1/sqrt(5)) * [(1+sqrt(5))/2]^10 - (1/sqrt(5)) * [(1-sqrt(5))/2]^10
 <br />Calculate: a(10) ≈ 55
