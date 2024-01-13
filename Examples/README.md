@@ -1,4 +1,4 @@
-## Amazing numbers
+# Amazing numbers
 Delving into the Intriguing World of Special Numbers: Armstrong, Automorphic, Peterson, Polindrome, Tech Numbers, and Fibonacci Series.
 <br />The realm of numbers is a captivating one, brimming with unique patterns, properties, and fascinating concepts that continue to intrigue mathematicians and enthusiasts worldwide. Among these intriguing number types, the Armstrong, Automorphic, Peterson, Polindrome, Tech Numbers, and Fibonacci Series stand out as particularly fascinating examples.
 ## Armstrong Numbers: A Celebration of Self-Similarity
@@ -26,6 +26,7 @@ This method directly calculates and prints the nth Fibonacci number using a more
 <br />Apply the formula: a(10) = (1/sqrt(5)) * [(1+sqrt(5))/2]^10 - (1/sqrt(5)) * [(1-sqrt(5))/2]^10
 <br />Calculate: a(10) ≈ 55
 ## Lisence
-Read LICENSE.txt for more information.
+Read LICENSE.txt for more information.<br />
+Only readme.md text editted by Google Bard AI, Not Code!
 ## Contact
 You can send me E-mail : shahriar.hd@outlook.com
