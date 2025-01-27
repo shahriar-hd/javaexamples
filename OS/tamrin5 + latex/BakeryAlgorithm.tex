@@ -1,0 +1,176 @@
+\documentclass{report}
+
+\usepackage{color}
+\usepackage{listings}
+\usepackage{hyperref}
+
+\lstset{
+  language=Java,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  breaklines=true,
+  tabsize=3
+}
+
+\begin{document}
+
+\chapter{Bakery Algorithm}
+% Enter author names EXACTLY as you would like them to appear in the final manuscript; only use pattern: first name, last name. Do NOT use pattern: last name, first name. Patronyms fall into the first name category.
+\author{Shahriar Hooshmand}
+
+
+\chaptermark{Bakery Algorithm}
+
+\begin{abstract} % abstract = max 200 words, unstructured format, single paragraph
+Bakery algorithm is a classic solution to the critical section problem in concurrent programming, ensuring mutual exclusion among multiple processes accessing shared resources. It operates by assigning a unique "ticket" or number to each process wanting to enter the critical section. These tickets are generated using a lexicographical order, meaning processes with lower numbers have priority. Before entering the critical section, a process announces its intention and takes a number higher than any other process's current number. When checking for access, a process compares its ticket with others; if its number is the lowest, or if its number is equal to another process's but its process ID is lower (breaking ties), it can proceed. This ensures that only one process is in the critical section at any given time, preventing race conditions and data corruption.
+\end{abstract}
+
+\section{Introduction} % first section MUST be titled Introduction, and feature introductory text; do NOT change this title
+
+This Java implementation demonstrates the Bakery algorithm, a classic solution to the critical section problem in concurrent programming. It ensures mutual exclusion among multiple threads accessing a shared resource by assigning numbered "tickets" to each thread, granting access based on ticket order and thread ID to prevent race conditions.
+
+\section{Bakery Algorithm}
+
+Bakery algorithm guarantees mutual exclusion in concurrent systems by assigning numbered "tickets" to processes competing for a critical section.
+
+\subsection{Number Selection}
+
+Each process, before entering the critical section, chooses a number higher than any other process's current number, effectively "taking a ticket" in a bakery-like fashion. This number represents the process's priority.
+
+\subsection{Turn Checking}
+
+Processes then check the numbers of all other processes. A process can enter the critical section only if its number is the lowest or, in case of a tie, if its process ID is lower than the other process's ID.
+
+\subsection{Tie Breaking}
+
+If two or more processes choose the same number, the process with the lower process ID is given priority. This deterministic tie-breaking mechanism is crucial for ensuring mutual exclusion and preventing deadlock or starvation.
+
+\section{Code}
+
+\begin{lstlisting}
+package javaapp;
+/* Peterson Algorithm
+ * @author Shahriar
+ * @date Nov 25, 2024
+ */
+public class JavaApp {
+    public static void main(String[] args) {
+        int numProcesses = 5;
+        BakersAlgorithm bakers = new BakersAlgorithm(numProcesses);
+        Thread[] threads = new Thread[numProcesses];
+        for (int i = 0; i < numProcesses; i++) {
+            int processId = i;
+            threads[i] = new Thread(() -> {
+                while (true) {
+                    bakers.enterRegion(processId);
+                    System.out.println("Process " + processId + " is in critical region.");
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    bakers.leaveRegion(processId);
+                    System.out.println("Process " + processId + " is in non-critical reigon.");
+                }
+            });
+            threads[i].start();
+        }
+    }
+}
+class BakersAlgorithm {
+    private int N;
+    private int[] number;
+    private boolean[] choosing;
+    public BakersAlgorithm(int N) {
+        this.N = N;
+        number = new int[N];
+        choosing = new boolean[N];
+    }
+    public void enterRegion(int process) {
+        int max = 0;
+        choosing[process] = true;
+        number[process] = 1 + maxFor(number);
+        choosing[process] = false;
+        for (int j = 0; j < N; j++) {
+            while (choosing[j]);
+            while (number[j] != 0 && (number[j] < number[process] || (number[j] == number[process] && j < process)));
+        }
+    }
+    public void leaveRegion(int process) {
+        number[process] = 0;
+    }
+    private int maxFor(int[] array) {
+        int max = 0;
+        for (int i = 0; i < array.length; i++) {
+            max = Math.max(max, array[i]);
+        }
+        return max;
+    }
+}
+
+\end{lstlisting}
+
+\section{Explain code}
+
+This Java code implements the Bakery algorithm for mutual exclusion, allowing multiple threads to safely access a shared resource (the "critical region"). Let's break down the code step by step:
+
+\subsection{JavaApp Class (Main Execution)}
+
+\begin{itemize}
+
+    \item int numProcesses = 5;: This line defines the number of concurrent processes (represented by threads) that will compete for the critical region.
+    \item BakersAlgorithm bakers = new BakersAlgorithm(numProcesses);: An instance of the BakersAlgorithm class is created, initializing the necessary data structures for the algorithm.
+    \item Thread[] threads = new Thread[numProcesses];: An array of Thread objects is created to manage the concurrent threads.
+    \item The for loop (from i = 0 to numProcesses - 1) creates and starts each thread:
+    \item int processId = i;: Assigns a unique ID to each thread.
+    \item threads[i] = new Thread(() -> { ... });: Creates a new thread using a lambda expression to define its execution logic.
+    \item while (true) { ... }: This infinite loop represents the continuous execution of each process.
+    \item bakers.enterRegion(processId);: This is the crucial part where the Bakery algorithm's entry protocol is executed. The thread attempts to acquire access to the critical region.
+    \item System.out.println("Process " + processId + " is in critical region.");: This line represents the critical section. Only one thread should be executing this line at any given time.
+    \item try { Thread.sleep(1000); } catch (InterruptedException e) { e.printStackTrace(); }: This simulates some work being done within the critical region, pausing the thread for 1 second.
+    \item bakers.leaveRegion(processId);: After finishing in the critical region, the thread calls this method to release its access.
+    \item System.out.println("Process " + processId + " is in non-critical reigon.");: This indicates the thread is now outside the critical section.
+    \item threads[i].start();: Starts the execution of the newly created thread.
+  
+\end{itemize}
+
+
+\subsection{BakersAlgorithm Class (Algorithm Implementation):}
+
+\begin{itemize}
+    \item private int N;: Stores the number of processes.
+    \item private int[] number;: This array stores the "ticket" or number for each process. A value of 0 indicates the process is not trying to enter the critical region.
+    \item private boolean[] choosing;: This array is used to handle the brief period when a process is choosing its number, preventing race conditions during number selection.
+    \item BakersAlgorithm(int N) (Constructor): Initializes the N, number, and choosing arrays.
+    \item enterRegion(int process): This is the core of the Bakery algorithm:
+    \item choosing[process] = true;: Sets the choosing flag for the current process to true, indicating it's in the process of choosing a number.
+    \item number[process] = 1 + maxFor(number);: The process chooses a number that is one greater than the maximum number currently held by any other process. This ensures that each process gets a unique, increasing number. The maxFor method (explained below) finds the maximum number.
+    \item choosing[process] = false;: Sets the choosing flag back to false.
+    \item The nested for and while loops implement the waiting and checking logic:
+    \item while (choosing[j]);: This inner loop waits if process j is currently choosing a number. This prevents race conditions during number selection.
+    \item while (number[j] != 0 && (number[j] < number[process] || (number[j] == number[process] && j < process)));: This is the main waiting condition. A process waits if another process j has a non-zero number (meaning it wants to enter the critical region) and either:
+    \item number[j] < number[process]: Process j has a lower number (higher priority).
+    \item number[j] == number[process] && j < process: Process j has the same number but a lower process ID (tie-breaker).
+    \item leaveRegion(int process): Sets the process's number back to 0, indicating it has left the critical region.
+    \item private int maxFor(int[] array): A helper method that finds the maximum value in an integer array.
+\end{itemize}
+
+\subsection{In summary}
+
+This code uses the Bakery algorithm to manage concurrent access to a critical section. Each thread simulates a process, and the BakersAlgorithm class ensures that only one thread can be in the critical region at any given time, preventing data corruption and race conditions. The choosing array and the tie-breaking mechanism (using process IDs) are crucial for the algorithm's correctness.
+
+\section*{References}
+
+Geeks for Geeks \url{https://www.geeksforgeeks.org/bakery-algorithm-in-process-synchronization/}
+\newline
+Scaler topics \url{https://www.scaler.com/topics/operating-system/bakery-algorithm-in-os/}
+\newline
+Wikipedia \url{https://en.wikipedia.org/wiki/Lamport's_bakery_algorithm}
+\newline
+Google Gemini for editing text \url{https://gemini.google.com/}
+
+\end{document} 
